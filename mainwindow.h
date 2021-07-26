@@ -7,6 +7,7 @@
 #endif
 
 #include <QMainWindow>
+#include <QTextStream>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,6 +23,11 @@ public:
 
 private slots:
 	void on_pushButton_conv_clicked();
+	void on_pushButton_save_clicked();
+
+private:
+	int makeData(QStringList &line, int index);
+	void saveData(QTextStream &stream);
 
 private:
 	Ui::MainWindow *ui;
