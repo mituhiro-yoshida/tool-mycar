@@ -44,6 +44,7 @@ int MainWindow::makeData(QStringList &line, int index)
 {
 	QString text;
 	QString data;
+	int find;
 
 	int row = ui->tableWidget->rowCount();
 	ui->tableWidget->setRowCount(row + 1);
@@ -58,58 +59,77 @@ int MainWindow::makeData(QStringList &line, int index)
 	// 到着時間
 	text = line.at(index + 13);
 	data = text.mid(1, 10);
-	ui->tableWidget->setItem(row, 2, new QTableWidgetItem(data));
+	ui->tableWidget->setItem(row, 5, new QTableWidgetItem(data));
 	data = text.right(8);
-	ui->tableWidget->setItem(row, 3, new QTableWidgetItem(data));
+	ui->tableWidget->setItem(row, 6, new QTableWidgetItem(data));
 
 	// 走行距離
 	text = line.at(index + 15);
 	data = text.mid(8);
-	ui->tableWidget->setItem(row, 4, new QTableWidgetItem(data));
+	ui->tableWidget->setItem(row, 7, new QTableWidgetItem(data));
+
+	// 距離-3
+	find = data.indexOf("km");
+	if (find >= 0) {
+		data = data.mid(0, find);
+	}
+	ui->tableWidget->setItem(row, 3, new QTableWidgetItem(data));
 
 	// 運転時間
 	text = line.at(index + 16);
 	data = text.mid(8);
-	ui->tableWidget->setItem(row, 5, new QTableWidgetItem(data));
+	ui->tableWidget->setItem(row, 8, new QTableWidgetItem(data));
+
+	// 時間-4
+	int time = data.mid(0, 2).toInt() * 60 + data.mid(3, 2).toInt();
+	data = QString::number(time);
+	ui->tableWidget->setItem(row, 4, new QTableWidgetItem(data));
 
 	// 平均速度
 	text = line.at(index + 17);
 	data = text.mid(8);
-	ui->tableWidget->setItem(row, 6, new QTableWidgetItem(data));
+	ui->tableWidget->setItem(row, 9, new QTableWidgetItem(data));
 
 	// 平均燃費
 	text = line.at(index + 18);
 	data = text.mid(8);
-	ui->tableWidget->setItem(row, 7, new QTableWidgetItem(data));
+	ui->tableWidget->setItem(row, 10, new QTableWidgetItem(data));
+
+	// 燃費-2
+	find = data.indexOf("km/L");
+	if (find >= 0) {
+		data = data.mid(0, find);
+	}
+	ui->tableWidget->setItem(row, 2, new QTableWidgetItem(data));
 
 	// 備考
 	text = line.at(index + 5);
 	data = text.mid(2);
-	ui->tableWidget->setItem(row, 8, new QTableWidgetItem(data));
+	ui->tableWidget->setItem(row, 11, new QTableWidgetItem(data));
 
 	// 出発場所
 	text = line.at(index + 2);
 	data = text.mid(1);
-	ui->tableWidget->setItem(row, 9, new QTableWidgetItem(data));
+	ui->tableWidget->setItem(row, 12, new QTableWidgetItem(data));
 
 	// 出発座標
 	text = line.at(index + 3);
 	data = text.mid(4);
 	text = line.at(index + 4);
 	data = "\"" + data + "," + text.mid(4) + "\"";
-	ui->tableWidget->setItem(row, 10, new QTableWidgetItem(data));
+	ui->tableWidget->setItem(row, 13, new QTableWidgetItem(data));
 
 	// 到着場所
 	text = line.at(index + 6);
 	data = text.mid(1);
-	ui->tableWidget->setItem(row, 11, new QTableWidgetItem(data));
+	ui->tableWidget->setItem(row, 14, new QTableWidgetItem(data));
 
 	// 到着座標
 	text = line.at(index + 7);
 	data = text.mid(4);
 	text = line.at(index + 8);
 	data = "\"" + data + "," + text.mid(4) + "\"";
-	ui->tableWidget->setItem(row, 12, new QTableWidgetItem(data));
+	ui->tableWidget->setItem(row, 15, new QTableWidgetItem(data));
 
 	return index + 20;
 }
@@ -131,20 +151,26 @@ void MainWindow::on_pushButton_conv_clicked()
 	}
 
 	if (!list.isNull()) {
-		ui->tableWidget->setColumnCount(13);
+		ui->tableWidget->setColumnCount(16);
+
 		ui->tableWidget->setHorizontalHeaderItem(0, new QTableWidgetItem("出発日付"));
 		ui->tableWidget->setHorizontalHeaderItem(1, new QTableWidgetItem("出発時刻"));
-		ui->tableWidget->setHorizontalHeaderItem(2, new QTableWidgetItem("到着日付"));
-		ui->tableWidget->setHorizontalHeaderItem(3, new QTableWidgetItem("到着時刻"));
-		ui->tableWidget->setHorizontalHeaderItem(4, new QTableWidgetItem("走行距離"));
-		ui->tableWidget->setHorizontalHeaderItem(5, new QTableWidgetItem("運転時間"));
-		ui->tableWidget->setHorizontalHeaderItem(6, new QTableWidgetItem("平均速度"));
-		ui->tableWidget->setHorizontalHeaderItem(7, new QTableWidgetItem("平均燃費"));
-		ui->tableWidget->setHorizontalHeaderItem(8, new QTableWidgetItem("備考"));
-		ui->tableWidget->setHorizontalHeaderItem(9, new QTableWidgetItem("出発場所"));
-		ui->tableWidget->setHorizontalHeaderItem(10, new QTableWidgetItem("出発座標"));
-		ui->tableWidget->setHorizontalHeaderItem(11, new QTableWidgetItem("到着場所"));
-		ui->tableWidget->setHorizontalHeaderItem(12, new QTableWidgetItem("到着座標"));
+
+		ui->tableWidget->setHorizontalHeaderItem(2, new QTableWidgetItem("燃費"));
+		ui->tableWidget->setHorizontalHeaderItem(3, new QTableWidgetItem("距離"));
+		ui->tableWidget->setHorizontalHeaderItem(4, new QTableWidgetItem("時間"));
+
+		ui->tableWidget->setHorizontalHeaderItem(5, new QTableWidgetItem("到着日付"));
+		ui->tableWidget->setHorizontalHeaderItem(6, new QTableWidgetItem("到着時刻"));
+		ui->tableWidget->setHorizontalHeaderItem(7, new QTableWidgetItem("走行距離"));
+		ui->tableWidget->setHorizontalHeaderItem(8, new QTableWidgetItem("運転時間"));
+		ui->tableWidget->setHorizontalHeaderItem(9, new QTableWidgetItem("平均速度"));
+		ui->tableWidget->setHorizontalHeaderItem(10, new QTableWidgetItem("平均燃費"));
+		ui->tableWidget->setHorizontalHeaderItem(11, new QTableWidgetItem("備考"));
+		ui->tableWidget->setHorizontalHeaderItem(12, new QTableWidgetItem("出発場所"));
+		ui->tableWidget->setHorizontalHeaderItem(13, new QTableWidgetItem("出発座標"));
+		ui->tableWidget->setHorizontalHeaderItem(14, new QTableWidgetItem("到着場所"));
+		ui->tableWidget->setHorizontalHeaderItem(15, new QTableWidgetItem("到着座標"));
 
 		QStringList line = list.split("\r\n");
 		int count = line.count();
